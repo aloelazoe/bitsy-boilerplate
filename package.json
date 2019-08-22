@@ -16,6 +16,10 @@
   },
   "author": "Sean S. LeBlanc & Elkie Nova",
   "license": "MIT",
+  "repository": {
+    "type": "git",
+    "url": "git://github.com/aloelazoe/bitsy-boilerplate.git"
+  },
   "dependencies": {
     "@bitsy/hecks": "github:aloelazoe/bitsy-hacks",
     "@bitsy/optimizer": "^1.0.1",
