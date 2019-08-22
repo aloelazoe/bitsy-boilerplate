@@ -93,3 +93,16 @@ addDialogTag('startTime', function(environment) {
 	printDialog(environment, startTime, onReturn);
 });
 ```
+
+## dev
+it is assumed that you clone/download this repo as a starting point for your bitsy game, and by default .gitignore rules allow to version-control files specific to your game
+
+if instead you wish to make commits to modify or extend the core boilerplate functionality without adding any game-specific files, use this command:
+`npm run set-dev`
+
+it will add new rules to your local `.git/info/exclude`, and the following paths will be ignored by git:
+
+`dist/*`
+`output`
+`bitsy-source`
+`input/template.html`
