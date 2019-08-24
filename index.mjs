@@ -4,6 +4,7 @@ import optimize from '@bitsy/optimizer';
 import optimizeOptions from './input/optimization';
 import resolve from 'resolve';
 import externalDeps from './external-deps';
+import bitsyPaths from './bitsy-paths.json';
 
 const fontName = 'ascii_small';
 
@@ -11,12 +12,12 @@ async function build() {
 	const externalDepsSrc = await Promise.all(Object.keys(externalDeps).map(function (dep) {
 		try {
 			return fse.readFile(resolve.sync(dep));
-		}
-		catch {
+		} catch {
 			try {
-				return fse.readFile(resolve.sync(dep, {basedir: resolve.sync('@bitsy/hecks')}));
-			}
-			catch {
+				return fse.readFile(resolve.sync(dep, {
+					basedir: resolve.sync('@bitsy/hecks')
+				}));
+			} catch {
 				console.log(`couldn't find dependency '${dep}' in node modules\nyou might want to include it manually in html template`);
 			}
 		}
@@ -24,34 +25,31 @@ async function build() {
 
 	const title = await fse.readFile('./input/title.txt');
 	const gamedata = await fse.readFile('./input/gamedata.bitsy', 'utf8');
-	const template = await fse.readFile('./input/template.html', 'utf8');
+	const template = await fse.readFile(bitsyPaths.template[1], 'utf8');
 
-	const bitsy = await fse.readFile('./bitsy-source/scripts/bitsy.js');
-	const font = await fse.readFile('./bitsy-source/scripts/font.js');
-	const dialog = await fse.readFile('./bitsy-source/scripts/dialog.js');
-	const script = await fse.readFile('./bitsy-source/scripts/script.js');
-	const color_util = await fse.readFile('./bitsy-source/scripts/color_util.js');
-	const transition = await fse.readFile('./bitsy-source/scripts/transition.js');
-	const renderer = await fse.readFile('./bitsy-source/scripts/renderer.js');
-	const fontData = await fse.readFile(`./bitsy-source/fonts/${fontName}.bitsyfont`);
+	const fontData = await fse.readFile(bitsyPaths[fontName][1]);
 
 	const css = await getCss('./input/style.css');
 	const hacks = await fse.readFile(`./output/hacks.js`);
+	const bitsyScripts = await Promise.all(
+		Object.entries(bitsyPaths) // get all the bitsy files
+		.filter(([key]) => key.startsWith('@@')) // filter out non-scripts
+		.map(async ([key, [, path]]) => [key, await fse.readFile(path)]) // convert to map of promises resolving with [key, script]
+	);
 
 	const config = {
 		'@@T': title,
 		'@@D': Object.values(optimizeOptions).includes(true) ? optimize(gamedata, optimizeOptions) : gamedata,
 		"@@C": css,
-		'@@U': color_util,
-		'@@X': transition,
-		'@@F': font,
-		'@@S': script,
-		'@@L': dialog,
-		'@@R': renderer,
-		'@@E': bitsy,
 		'@@N': fontName,
 		'@@M': fontData,
-		'</head>': ['<script>', externalDepsSrc.join('\n'), hacks, '</script>', '</head>'].join('\n'),
+
+		...bitsyScripts.reduce((r, [key, file]) => ({
+			...r,
+			[key]: file,
+		}), {}),
+
+		'</head>': `${externalDepsSrc.concat(hacks).map(s => `<script>\n${s}\n</script>`).join('\n')}\n</head>`,
 	};
 
 	const html = Object.entries(config)
