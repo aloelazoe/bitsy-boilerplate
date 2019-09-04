@@ -2,17 +2,20 @@
   "name": "bitsy-boilerplate",
   "version": "1.0.0",
   "description": "tool for building bitsy games",
-  "main": "index.js",
+  "main": "build-html.mjs",
   "scripts": {
     "build-hacks": "rollup -c",
-    "build-html": "node --experimental-modules index.mjs",
-    "watch-hacks": "npm-watch build-hacks",
+    "build-html": "node --experimental-modules build-html.mjs",
+    "bundle-html": "node --experimental-modules bundle-html.mjs",
+    "watch-hacks": "rollup -c --watch",
     "watch-html": "npm-watch build-html",
-    "build": "npm run build-hacks&&npm run build-html",
+    "build": "npm run build-hacks && npm run build-html",
+    "bundle": "npm run build-hacks && npm run bundle-html",
     "start": "concurrently 'npm:watch-*'",
     "fetch-bitsy": "node --experimental-modules fetch-bitsy-source.mjs",
     "postinstall": "npm run fetch-bitsy",
-    "set-dev": "node --experimental-modules set-dev.mjs"
+    "set-dev": "node --experimental-modules set-dev.mjs",
+    "clean": "rm -rf build && rm -rf bundle && echo cleaned build folders"
   },
   "author": "Sean S. LeBlanc & Elkie Nova",
   "license": "MIT",
@@ -45,8 +48,7 @@
     },
     "build-html": {
       "patterns": [
-        "input",
-        "output/hacks.js"
+        "input"
       ],
       "ignore": "input/hacks.js",
       "extensions": "txt,js,mjs,css,bitsy,html"

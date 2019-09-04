@@ -30,7 +30,7 @@ async function build() {
 	const fontData = await fse.readFile(bitsyPaths[fontName][1]);
 
 	const css = await getCss('./input/style.css');
-	const hacks = await fse.readFile(`./output/hacks.js`);
+	const hacks = await fse.readFile(`./build/js/hacks.js`);
 	const bitsyScripts = await Promise.all(
 		Object.entries(bitsyPaths) // get all the bitsy files
 		.filter(([key]) => key.startsWith('@@')) // filter out non-scripts
@@ -58,7 +58,7 @@ async function build() {
 			template
 		);
 
-	await fse.outputFile('./dist/index.html', html);
+	await fse.outputFile('./bundle/index.html', html);
 }
 
 build()

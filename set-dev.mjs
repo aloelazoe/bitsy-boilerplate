@@ -1,7 +1,7 @@
 import fs from 'fs';
 const fsp = fs.promises;
 
-const gitIgnoreRules = 'dist/*\n/output\n/bitsy-source\n/input/template.html\n';
+const gitIgnoreRules = '/bitsy-source\n/input/template.html\n';
 
 fsp.appendFile('./.git/info/exclude', gitIgnoreRules)
 	.then(() => console.log('add dev-mode ignore rules to .git/info/exclude'))
