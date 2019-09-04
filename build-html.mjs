@@ -66,6 +66,7 @@ async function build() {
     );
 
   await fse.outputFile('./build/index.html', html);
+  if (fse.existsSync('./resources')) await fse.copy('./resources', './build');
 }
 
 build()

@@ -16,6 +16,7 @@ the idea behind this is sort of like a scripted version of [Borksy](https://ayol
 1. edit `./input/optimization.js` with optimization options
 1. edit `./input/template.html` to add custom html, for example if you need to add audio
 1. edit `./external-deps.mjs` to specify what dependencies should be written to the output directly instead of being transpiled by rollup when building the hacks. in case with large libraries like babylonjs used by 3d hack, this will drastically reduce build time
+1. you can add `./resources` folder, and whatever you put in there will be copied over into `./build` or `./bundle` folder (depending on what command you use). this is useful for adding audio files
 1. run `npm start`, `npm run build` or `npm run bundle`
 	- `start` will watch the input files and rebuild automatically when they're changed
 	- `build` will run once and output `./build/index.html` that will link to hacks in a separate file in `./build/js/hacks.js`, it will also copy external dependencies as separate files into  `./build/js` and link to them in a similar way
@@ -105,5 +106,6 @@ if instead you wish to make commits to modify or extend the core boilerplate fun
 
 it will add new rules to your local `.git/info/exclude`, and the following paths will be ignored by git:
 
+`resources/*`
 `bitsy-source`
 `input/template.html`
