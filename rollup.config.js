@@ -21,5 +21,6 @@ export default {
 			...external,
 		},
 		file: './build/js/hacks.js',
+		name: 'hacks',
 	},
 };
